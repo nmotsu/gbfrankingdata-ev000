@@ -340,6 +340,13 @@ function ensureChartJs() {
     --md-elevation-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
     --md-elevation-2: 0 2px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
     --md-elevation-3: 0 4px 12px rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.2);
+    /* 行/オーバーレイ（テーマ追従） */
+    --row-top1-bg: #2a2200;
+    --row-top2-bg: #1e1e2e;
+    --row-top3-bg: #261400;
+    --row-odd-bg: rgba(255,255,255,0.04);
+    --row-hairline: rgba(255,255,255,0.05);
+    --row-hover: rgba(255,255,255,0.05);
   }
   /* === ライトモード（data-theme="light" で base 変数を上書き、MD3トークンへ波及） === */
   html[data-theme="light"] {
@@ -355,7 +362,16 @@ function ensureChartJs() {
     --md-elevation-1: 0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
     --md-elevation-2: 0 2px 6px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
     --md-elevation-3: 0 4px 12px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
+    --row-top1-bg: #fff7d6;
+    --row-top2-bg: #eef0f6;
+    --row-top3-bg: #fbecd9;
+    --row-odd-bg: rgba(0,0,0,0.035);
+    --row-hairline: rgba(0,0,0,0.10);
+    --row-hover: rgba(0,0,0,0.05);
   }
+  html[data-theme="light"] .type-morning  { background:#fff3d6; color:#92600a; }
+  html[data-theme="light"] .type-daily    { background:#dcf5e3; color:#15803d; }
+  html[data-theme="light"] .type-overnight{ background:color-mix(in srgb,var(--elem-color) 14%, #fff); color:#1d4ed8; }
   body { background: var(--theme-bg); color: var(--theme-on-surface); font-family: 'Segoe UI', sans-serif; }
   .header { background: var(--theme-surface); border-bottom: 2px solid var(--elem-color); padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
   .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
@@ -401,8 +417,8 @@ function ensureChartJs() {
   .tab-btn:not(.active) { background: var(--md-surface-container-high); color: var(--md-on-surface-variant); }
   .tab-btn:not(.active):hover { background: var(--md-surface-bright); color: var(--md-on-surface); }
   .tab-sub { font-size: 0.5625rem; font-weight:400; opacity:0.65; }
-  tr.rank-row:nth-child(even) { background: rgba(255,255,255,0.018); }
-  .rank-row:hover { background: rgba(255,255,255,0.05) !important; }
+  tr.rank-row:nth-child(even) { background: var(--row-odd-bg); }
+  .rank-row:hover { background: var(--row-hover) !important; }
   .rank-row.top-1 { border-left: 4px solid var(--md-warning); box-shadow: inset 60px 0 20px -20px rgba(251,191,36,0.12); }
   .rank-row.top-2 { border-left: 4px solid #c0c0c0; box-shadow: inset 60px 0 20px -20px rgba(192,192,192,0.10); }
   .rank-row.top-3 { border-left: 4px solid #cd7c32; box-shadow: inset 60px 0 20px -20px rgba(205,124,50,0.10); }
@@ -411,7 +427,7 @@ function ensureChartJs() {
   @keyframes md-fade-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; }
   th { background: var(--md-surface); color: var(--md-on-surface-variant); font-size: 0.6875rem; padding: 8px 12px; letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500; overflow: hidden; position: sticky; top: 0; z-index: 2; user-select: none; white-space: nowrap; }
-  td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8125rem; vertical-align: middle; overflow: hidden; font-variant-numeric: tabular-nums; transition: background var(--md-duration-short) var(--md-ease); }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--row-hairline); font-size: 0.8125rem; vertical-align: middle; overflow: hidden; font-variant-numeric: tabular-nums; transition: background var(--md-duration-short) var(--md-ease); }
   .col-gn { text-overflow: ellipsis; white-space: nowrap; }
   .modal-body { overflow-x: auto; -webkit-overflow-scrolling: touch; min-width: 0; padding: 12px 8px; }
   .modal-table { min-width: 760px; }
@@ -506,9 +522,9 @@ function ensureChartJs() {
   .modal-table td:nth-child(6) { min-width: 115px; }
   .modal-table th:nth-child(7),
   .modal-table td:nth-child(7) { min-width: 140px; }
-  .modal-table td { padding: 6px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; vertical-align: middle; white-space: nowrap; transition: background var(--md-duration-short) var(--md-ease); }
+  .modal-table td { padding: 6px 12px; border-bottom: 1px solid var(--row-hairline); text-align: right; vertical-align: middle; white-space: nowrap; transition: background var(--md-duration-short) var(--md-ease); }
   .modal-table td:first-child { text-align: left; font-size: 0.6875rem; color: var(--md-on-surface-variant); font-family: monospace; white-space: nowrap; }
-  .modal-table tr:hover td { background: rgba(255,255,255,0.05); }
+  .modal-table tr:hover td { background: var(--row-hover); }
   /* GN クリッカブル */
   .gn-clickable { cursor: pointer; color: var(--md-on-primary-container); }
   .gn-clickable:hover { text-decoration: underline; }
@@ -565,7 +581,7 @@ function ensureChartJs() {
   /* コントロール折りたたみ */
   #ctrl-toggle-bar { display:flex; justify-content:flex-end; align-items:center; padding:3px 6px 3px 8px; background:var(--md-surface-dim); border-bottom:1px solid var(--md-outline-variant); gap:6px; }
   #ctrl-toggle-btn { background:none; border:none; cursor:pointer; color:var(--md-on-surface-variant); font-size:11px; padding:3px 8px; border-radius:var(--md-shape-sm); display:flex; align-items:center; gap:4px; transition:all var(--md-duration-short) var(--md-ease); }
-  #ctrl-toggle-btn:hover { background:rgba(255,255,255,0.07); color:var(--md-on-surface); }
+  #ctrl-toggle-btn:hover { background:var(--row-hover); color:var(--md-on-surface); }
   #ctrl-toggle-arrow { display:inline-block; transition:transform 0.3s var(--md-ease); }
   #main-content.ctrl-collapsed #ctrl-toggle-arrow { transform:rotate(180deg); }
   /* アコーディオン: grid-template-rows で高さをスムーズに変化させる */
@@ -592,7 +608,7 @@ function ensureChartJs() {
   .graph-sub-btn { padding:4px 12px; border-radius:var(--md-shape-sm); font-size:0.6875rem; cursor:pointer; background:var(--md-surface-container-high); border:1px solid var(--md-outline); color:var(--md-on-surface-variant); white-space:nowrap; transition:all var(--md-duration-short) var(--md-ease); }
   .graph-sub-btn:hover { border-color:var(--md-primary); color:var(--md-primary); }
   .graph-suggest-item { padding:8px 14px; cursor:pointer; font-size:0.75rem; color:var(--md-on-surface); border-bottom:1px solid var(--md-outline-variant); transition:background var(--md-duration-short) var(--md-ease); }
-  .graph-suggest-item:hover { background:rgba(255,255,255,0.05); }
+  .graph-suggest-item:hover { background:var(--row-hover); }
   .graph-search-wrap { position:relative; display:inline-block; }
   /* ===== PC サイドバー ===== */
   #main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -609,7 +625,7 @@ function ensureChartJs() {
     #side-collapse-btn { display: none !important; }
   }
   #side-collapse-btn { display: none; width: 100%; height: 28px; background: transparent; border: none; border-bottom: 1px solid var(--md-outline-variant); border-radius: 0; cursor: pointer; padding: 0 10px; color: var(--md-on-surface-variant); font-size: 11px; line-height: 1; transition: all var(--md-duration-short) var(--md-ease); flex-shrink: 0; align-items: center; justify-content: flex-end; gap: 4px; }
-  #side-collapse-btn:hover { color: var(--md-on-surface); background: rgba(255,255,255,0.05); }
+  #side-collapse-btn:hover { color: var(--md-on-surface); background: var(--row-hover); }
   #side-panel.collapsed #side-collapse-btn { justify-content: center; padding: 0; }
   .side-card { background: var(--md-surface-container); border: 1px solid var(--md-outline-variant); border-radius: var(--md-shape-md); padding: 12px; transition: border-color var(--md-duration-short) var(--md-ease); }
   .side-card:hover { border-color: var(--md-outline); }
@@ -3175,11 +3191,11 @@ function formatChange(prevRank, rank) {
 }
 
 function rowBg(honorRank, displayIdx) {
-  if (honorRank === 1) return '#2a2200';
-  if (honorRank === 2) return '#1e1e2e';
-  if (honorRank === 3) return '#261400';
+  if (honorRank === 1) return 'var(--row-top1-bg)';
+  if (honorRank === 2) return 'var(--row-top2-bg)';
+  if (honorRank === 3) return 'var(--row-top3-bg)';
   if (displayIdx % 2 === 0) return 'transparent';
-  return 'rgba(255,255,255,0.04)';
+  return 'var(--row-odd-bg)';
 }
 
 function getTierClass(rank) {
