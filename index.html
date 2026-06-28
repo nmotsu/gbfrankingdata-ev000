@@ -372,8 +372,7 @@ function ensureChartJs() {
   html[data-theme="light"] .type-morning  { background:#fff3d6; color:#92600a; }
   html[data-theme="light"] .type-daily    { background:#dcf5e3; color:#15803d; }
   html[data-theme="light"] .type-overnight{ background:color-mix(in srgb,var(--elem-color) 14%, #fff); color:#1d4ed8; }
-  /* ライト: 増加貢献度は黒、GNは青、バーを濃くしてメリハリ */
-  html[data-theme="light"] .honor-diff { color:#1a1d21 !important; }
+  /* ライト: GNは青、バーを濃くしてメリハリ（増加貢献度は本文色で統一済み） */
   html[data-theme="light"] .gn-clickable:not(.gn-pinned) { color:#1d4ed8 !important; }
   html[data-theme="light"] .honor-bar-bg { opacity:0.30; }
   body { background: var(--theme-bg); color: var(--theme-on-surface); font-family: 'Segoe UI', sans-serif; }
@@ -3117,8 +3116,8 @@ function renderRanking(data) {
     const honorRank = getHonorRank(p);
     const pct       = topHonor > 0 ? (p.honorDiff / topHonor * 100).toFixed(1) : 0;
     const barColor  = honorRank === 1 ? '#fbbf24' : honorRank <= 3 ? '#60a5fa' : honorRank <= 10 ? '#4ade80' : '#6366f1';
-    const diffColor = honorRank === 1 ? '#fbbf24' : honorRank === 2 ? '#c0c0c0' : honorRank === 3 ? '#cd7c32'
-                    : p.honorDiff > 0 ? '#e2e8f0' : '#4b5563';
+    // 増加貢献度の文字色は他のセルと統一（本文色）
+    const diffColor = 'var(--md-on-surface)';
     const diffSign  = p.honorDiff > 0 ? '+' : '';
     const totalFmt  = p.honor != null ? numFmt(p.honor) : '-';
     const bg        = rowBg(honorRank, displayIdx);
