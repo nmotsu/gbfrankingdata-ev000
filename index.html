@@ -3116,8 +3116,8 @@ function renderRanking(data) {
     const honorRank = getHonorRank(p);
     const pct       = topHonor > 0 ? (p.honorDiff / topHonor * 100).toFixed(1) : 0;
     const barColor  = honorRank === 1 ? '#fbbf24' : honorRank <= 3 ? '#60a5fa' : honorRank <= 10 ? '#4ade80' : '#6366f1';
-    // 増加貢献度の文字色は他のセルと統一（本文色）
-    const diffColor = 'var(--md-on-surface)';
+    // 増加貢献度の文字色は他のセルと統一（控えめな本文色）
+    const diffColor = 'var(--md-on-surface-variant)';
     const diffSign  = p.honorDiff > 0 ? '+' : '';
     const totalFmt  = p.honor != null ? numFmt(p.honor) : '-';
     const bg        = rowBg(honorRank, displayIdx);
