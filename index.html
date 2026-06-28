@@ -3017,6 +3017,9 @@ async function reload() {
     } else {
       const ep = { morning: 'morning', daily: 'daily', overnight: 'overnight' }[currentTab];
       if (ep) {
+        // 集計タブは日別ファイル(snap-DATE.json.gz)へ分離済み → 静的モードでは当日分を遅延ロード
+        const aggDay = currentDate || snapDayList[snapDayList.length - 1] || '';
+        if (aggDay) await ensureSnapDayLoaded(aggDay);
         const url = `/api/ranking/${ep}?event_id=${currentEventId}${currentDate ? `&date=${currentDate}` : ''}`;
         data = await apiFetch(url);
       }
