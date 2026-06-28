@@ -64,6 +64,15 @@
 .text-blue-400 { color: #60a5fa; }
 .text-red-400  { color: #f87171; }
 
+/* --- ライトモードで読みづらい白系/淡灰をダーク寄りに上書き --- */
+html[data-theme="light"] .text-white    { color: #1a1d21; }
+html[data-theme="light"] .text-gray-400 { color: #5b6470; }
+html[data-theme="light"] .text-gray-500 { color: #6b7280; }
+html[data-theme="light"] .text-gray-600 { color: #4b5563; }
+html[data-theme="light"] .text-blue-300 { color: #2563eb; }
+html[data-theme="light"] .text-blue-400 { color: #1d4ed8; }
+html[data-theme="light"] .hover\:text-white:hover { color: #1a1d21; }
+
 /* --- Hover text color --- */
 .hover\:text-white:hover    { color: #ffffff; }
 .hover\:text-blue-400:hover { color: #60a5fa; }
@@ -331,6 +340,21 @@ function ensureChartJs() {
     --md-elevation-1: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
     --md-elevation-2: 0 2px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
     --md-elevation-3: 0 4px 12px rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.2);
+  }
+  /* === ライトモード（data-theme="light" で base 変数を上書き、MD3トークンへ波及） === */
+  html[data-theme="light"] {
+    --theme-bg: #f4f5f7;
+    --theme-surface: #ffffff;
+    --theme-surface-container: #f1f2f4;
+    --theme-surface-container-high: #e7e9ec;
+    --theme-outline: #cfd3da;
+    --theme-outline-variant: #e2e5ea;
+    --theme-on-surface: #1a1d21;
+    --theme-on-surface-variant: #586173;
+    --chart-grid-color: rgba(0,0,0,0.08);
+    --md-elevation-1: 0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
+    --md-elevation-2: 0 2px 6px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
+    --md-elevation-3: 0 4px 12px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.08);
   }
   body { background: var(--theme-bg); color: var(--theme-on-surface); font-family: 'Segoe UI', sans-serif; }
   .header { background: var(--theme-surface); border-bottom: 2px solid var(--elem-color); padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
@@ -666,11 +690,44 @@ function openHowto() {
   }
 }
 
+/* ─── Color Mode (light / dark) ──────────────── */
+
+const COLOR_MODE_KEY = 'gbf_color_mode';
+
+function getColorMode() {
+  try {
+    const saved = localStorage.getItem(COLOR_MODE_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch {}
+  return 'dark'; // 既定はダーク（既存挙動）
+}
+
+function applyColorMode(mode) {
+  const m = mode === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', m);
+  try { localStorage.setItem(COLOR_MODE_KEY, m); } catch {}
+  // トグルボタンのアイコンを更新（存在すれば）
+  document.querySelectorAll('.color-mode-toggle').forEach(btn => {
+    btn.textContent = m === 'light' ? '🌙' : '☀';
+    btn.title = m === 'light' ? 'ダークモードに切替' : 'ライトモードに切替';
+  });
+}
+
+function toggleColorMode() {
+  const cur = document.documentElement.getAttribute('data-theme') || getColorMode();
+  applyColorMode(cur === 'light' ? 'dark' : 'light');
+}
+
+// FOUC回避のため即時適用（DOMContentLoaded を待たない）
+applyColorMode(getColorMode());
+
 /* ─── Init ───────────────────────────────────── */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Clear any stored background theme (single theme only)
+  // Clear any stored background theme (legacy)
   localStorage.removeItem('gbf_bg_theme');
+  // 保存済みカラーモードを再適用（ボタンアイコン同期のため）
+  applyColorMode(getColorMode());
 });
 
 </script>
@@ -804,6 +861,7 @@ class VirtualScroll {
     <input id="date-select" type="date" onchange="onDateChange()" style="display:none">
     <span id="demo-badge" class="demo-badge" style="display:none">DEMO</span>
     <div class="hdr-right">
+      <button class="hdr-btn color-mode-toggle" onclick="toggleColorMode()" title="ライトモードに切替" aria-label="カラーモード切替">☀</button>
       <span id="viewer-badge" class="viewer-badge" style="display:none"></span>
 <a href="/border" class="hdr-btn hdr-btn-blue" id="border-header-link">ボーダー</a>
       <a href="/guild" class="hdr-btn hdr-btn-blue" id="guild-header-link">団ランキング</a>
@@ -832,7 +890,7 @@ class VirtualScroll {
     <!-- ① タブ: 4列1行（全幅） -->
     <div id="tab-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
       <button class="tab-btn active" id="tab-20min" onclick="switchTab('20min')">20分速<span class="tab-sub">直前→最新</span></button>
-      <button class="tab-btn" id="tab-morning" onclick="switchTab('morning')">朝活<span class="tab-sub">7:00→8:00</span></button>
+      <button class="tab-btn" id="tab-morning" onclick="switchTab('morning')">朝活<span class="tab-sub" id="tab-morning-sub">7:00→8:00</span></button>
       <button class="tab-btn" id="tab-daily" onclick="switchTab('daily')">日速<span class="tab-sub" id="tab-daily-sub">7:00→最新</span></button>
       <button class="tab-btn" id="tab-overnight" onclick="switchTab('overnight')">残業<span class="tab-sub">0:00→7:00</span></button>
     </div>
@@ -1039,6 +1097,7 @@ class VirtualScroll {
       <!-- プレイヤー管理：操作ボタン行 -->
       <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px">
         <button class="graph-sub-btn" onclick="addBattlePlayersToGraph()">バトルから追加</button>
+        <button class="graph-sub-btn" onclick="addWatchedPlayersToGraph()">注目から追加</button>
         <div class="graph-search-wrap">
           <input id="graph-player-search" type="text" placeholder="プレイヤー名..." style="font-size:12px;width:130px"
                  oninput="onGraphPlayerSearch()" onblur="setTimeout(()=>hideGraphSuggest(),200)" autocomplete="off">
@@ -3008,9 +3067,11 @@ function renderRanking(data) {
   const badgeEl = document.getElementById('type-badge-label');
   badgeEl.textContent = meta.label;
   badgeEl.className   = `type-badge ${meta.cls}`;
-  // タブのサブテキストを更新（日速のみ）
+  // タブのサブテキストを更新（日速・朝活）
   const dailySubEl = document.getElementById('tab-daily-sub');
-  if (dailySubEl) dailySubEl.textContent = data.isLive ? '7:00→最新' : '7:00→0:00';
+  if (dailySubEl && data.type === '日速') dailySubEl.textContent = data.isLive ? '7:00→最新' : '7:00→0:00';
+  const morningSubEl = document.getElementById('tab-morning-sub');
+  if (morningSubEl && data.type === '朝活') morningSubEl.textContent = data.isLive ? '7:00→最新' : '7:00→8:00';
 
   // 更新中バッジ: afterPlayerCount が 2000未満なら表示
   const updBadge = document.getElementById('updating-badge');
@@ -3383,6 +3444,19 @@ function addBattlePlayersToGraph() {
   renderGraph();
 }
 
+function addWatchedPlayersToGraph() {
+  const pool = currentRenderData?.players || window._lastRankingPlayers || [];
+  for (const username of watchedNames) {
+    const key = String(username);
+    if (graphPlayers.find(p => String(p.id ?? p.name) === key || p.name === username)) continue;
+    const found = pool.find(p => p.username === username);
+    const color = GRAPH_COLORS[graphPlayers.length % GRAPH_COLORS.length];
+    graphPlayers.push({ id: found?.player_id ?? null, name: username, color });
+  }
+  updateGraphPlayerTags();
+  renderGraph();
+}
+
 function clearGraphPlayers() {
   graphPlayers = [];
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
@@ -3493,6 +3567,30 @@ function hideGraphSuggest() {
   if (el) el.style.display = 'none';
 }
 
+// GBF日アンカー（dayKey の 07:00）から captured_at までの経過分（0〜1439）
+function minutesFromAnchor(capturedAt, dayKey) {
+  const [yy, mm, dd] = dayKey.split('-').map(Number);
+  const anchor = new Date(yy, mm - 1, dd, 7, 0, 0).getTime();
+  const cy = Number(capturedAt.substring(0, 4));
+  const cm = Number(capturedAt.substring(5, 7));
+  const cd = Number(capturedAt.substring(8, 10));
+  const ch = Number(capturedAt.substring(11, 13));
+  const cmin = Number(capturedAt.substring(14, 16));
+  const cap = new Date(cy, cm - 1, cd, ch, cmin, 0).getTime();
+  return Math.round((cap - anchor) / 60000);
+}
+
+// フェーズ別の単日表示時間窓（アンカー07:00からのオフセット分 [start, end]）
+// null = クリップなし（全件）
+function graphPhaseWindow(dayKey) {
+  const period = getGBFPeriodName(dayKey + ' 12:00:00', currentEventStartDate());
+  if (period === '予選1日目')   return [720, 1439]; // 19:00〜翌6:59
+  if (period === '予選2日目')   return [0, 1039];   // 7:00〜24:19
+  if (period.startsWith('本戦')) return [0, 1039];   // 7:00〜24:19
+  if (period === 'インターバル') return [0, 1439];   // 全体
+  return null; // 開始前/その他はクリップなし
+}
+
 // ---- データ取得 ----
 async function loadGraphData() {
   const fromDay = document.getElementById('graph-from-select')?.value;
@@ -3509,6 +3607,19 @@ async function loadGraphData() {
   let snaps = [];
   for (const day of days) snaps.push(...(snapGroups[day] || []));
   snaps.sort((a, b) => a.captured_at.localeCompare(b.captured_at));
+
+  // 単日選択時はフェーズ別の表示時間窓でクリップ
+  // （複数日選択時はクリップせず残業帯も連続表示）
+  if (dayCount === 1) {
+    const dayKey = days[0];
+    const win = graphPhaseWindow(dayKey);
+    if (win) {
+      snaps = snaps.filter(s => {
+        const m = minutesFromAnchor(s.captured_at, dayKey);
+        return m >= win[0] && m <= win[1];
+      });
+    }
+  }
 
   const labels = [];
   const playerSeries = {}; // id -> { speed:[], honor:[], rank:[], timestamps:[] }
@@ -3665,7 +3776,7 @@ async function renderGraph() {
       backgroundColor: gp.color + '15',
       pointRadius: ptRadius,
       pointHoverRadius: ptHoverR,
-      tension: isRank ? 0 : 0.3,
+      tension: 0,
       spanGaps: yKey === 'honor',
       borderWidth: 2,
     });
@@ -3691,7 +3802,7 @@ async function renderGraph() {
           borderWidth: 1.5,
           pointRadius: 0,
           pointHoverRadius: 4,
-          tension: 0.2,
+          tension: 0,
           spanGaps: true,
           fill: false,
         });
@@ -3752,7 +3863,7 @@ async function renderGraph() {
           pointRadius: 0,
           borderWidth: 2,
           borderDash: [8, 4],
-          tension: 0.3,
+          tension: 0,
           spanGaps: yKey === 'honor',
           yAxisID: 'y',
         });
