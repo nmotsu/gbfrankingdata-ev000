@@ -372,6 +372,10 @@ function ensureChartJs() {
   html[data-theme="light"] .type-morning  { background:#fff3d6; color:#92600a; }
   html[data-theme="light"] .type-daily    { background:#dcf5e3; color:#15803d; }
   html[data-theme="light"] .type-overnight{ background:color-mix(in srgb,var(--elem-color) 14%, #fff); color:#1d4ed8; }
+  /* ライト: 増加貢献度は黒、GNは青、バーを濃くしてメリハリ */
+  html[data-theme="light"] .honor-diff { color:#1a1d21 !important; }
+  html[data-theme="light"] .gn-clickable:not(.gn-pinned) { color:#1d4ed8 !important; }
+  html[data-theme="light"] .honor-bar-bg { opacity:0.30; }
   body { background: var(--theme-bg); color: var(--theme-on-surface); font-family: 'Segoe UI', sans-serif; }
   .header { background: var(--theme-surface); border-bottom: 2px solid var(--elem-color); padding: 12px 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
   .header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
